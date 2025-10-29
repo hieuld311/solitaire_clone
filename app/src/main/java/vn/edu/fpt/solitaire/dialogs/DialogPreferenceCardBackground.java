@@ -1,0 +1,195 @@
+
+package vn.edu.fpt.solitaire.dialogs;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import java.util.Locale;
+
+import vn.edu.fpt.solitaire.R;
+import vn.edu.fpt.solitaire.classes.CustomDialogPreference;
+
+import static vn.edu.fpt.solitaire.SharedData.bitmaps;
+import static vn.edu.fpt.solitaire.SharedData.prefs;
+
+/**
+ * dialog for picking the card background drawable. It uses a custom layout, so I can dynamically update
+ * the widget icon of the preference.
+ */
+
+public class DialogPreferenceCardBackground extends CustomDialogPreference implements View.OnClickListener {
+
+    private static int NUMBER_OF_CARD_BACKGROUNDS = 10;
+
+    private LinearLayout[] linearLayoutsBackgrounds = new LinearLayout[NUMBER_OF_CARD_BACKGROUNDS];
+    private ImageView[] imageViews = new ImageView[NUMBER_OF_CARD_BACKGROUNDS];
+
+    private LinearLayout[] linearLayoutsColors = new LinearLayout[4];
+    private Context context;
+    private ImageView image;
+    private TypedValue typedValue = new TypedValue();
+
+    private int selectedBackground;
+    private int selectedBackgroundColor;
+
+
+    public DialogPreferenceCardBackground(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setDialogLayoutResource(R.layout.dialog_settings_cards_background);
+        setDialogIcon(null);
+        setDialogTitle("");
+
+        this.context = context;
+
+        context.getTheme().resolveAttribute(androidx.appcompat.R.attr.selectableItemBackground, typedValue, true);
+    }
+
+    @Override
+    protected void onBindDialogView(View view) {
+
+        linearLayoutsBackgrounds[0] = view.findViewById(R.id.settingsCardBackground0);
+        linearLayoutsBackgrounds[1] = view.findViewById(R.id.settingsCardBackground1);
+        linearLayoutsBackgrounds[2] = view.findViewById(R.id.settingsCardBackground2);
+        linearLayoutsBackgrounds[3] = view.findViewById(R.id.settingsCardBackground3);
+        linearLayoutsBackgrounds[4] = view.findViewById(R.id.settingsCardBackground4);
+        linearLayoutsBackgrounds[5] = view.findViewById(R.id.settingsCardBackground5);
+        linearLayoutsBackgrounds[6] = view.findViewById(R.id.settingsCardBackground6);
+        linearLayoutsBackgrounds[7] = view.findViewById(R.id.settingsCardBackground7);
+        linearLayoutsBackgrounds[8] = view.findViewById(R.id.settingsCardBackground8);
+        linearLayoutsBackgrounds[9] = view.findViewById(R.id.settingsCardBackground9);
+
+        linearLayoutsColors[0] = view.findViewById(R.id.dialogBackgroundsCardsBlue);
+        linearLayoutsColors[1] = view.findViewById(R.id.dialogBackgroundsCardsRed);
+        linearLayoutsColors[2] = view.findViewById(R.id.dialogBackgroundsCardsGreen);
+        linearLayoutsColors[3] = view.findViewById(R.id.dialogBackgroundsCardsYellow);
+
+        for (int i = 0; i < NUMBER_OF_CARD_BACKGROUNDS; i++) {
+            linearLayoutsBackgrounds[i].setOnClickListener(this);
+            imageViews[i] = (ImageView) linearLayoutsBackgrounds[i].getChildAt(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            linearLayoutsColors[i].setOnClickListener(this);
+        }
+
+        selectedBackground = prefs.getSavedCardBackground();
+        selectedBackgroundColor = prefs.getSavedCardBackgroundColor();
+        updateDialog();
+
+        super.onBindDialogView(view);
+    }
+
+    public void onClick(View v) {
+
+        if (v.getId() == R.id.settingsCardBackground0) {
+            selectedBackground = 0;
+        } else if (v.getId() == R.id.settingsCardBackground1) {
+            selectedBackground = 1;
+        } else if (v.getId() == R.id.settingsCardBackground2) {
+            selectedBackground = 2;
+        } else if (v.getId() == R.id.settingsCardBackground3) {
+            selectedBackground = 3;
+        } else if (v.getId() == R.id.settingsCardBackground4) {
+            selectedBackground = 4;
+        } else if (v.getId() == R.id.settingsCardBackground5) {
+            selectedBackground = 5;
+        } else if (v.getId() == R.id.settingsCardBackground6) {
+            selectedBackground = 6;
+        } else if (v.getId() == R.id.settingsCardBackground7) {
+            selectedBackground = 7;
+        } else if (v.getId() == R.id.settingsCardBackground8) {
+            selectedBackground = 8;
+        } else if (v.getId() == R.id.settingsCardBackground9) {
+            selectedBackground = 9;
+        } else if (v.getId() == R.id.dialogBackgroundsCardsBlue) {
+            selectedBackgroundColor = 0;
+        } else if (v.getId() == R.id.dialogBackgroundsCardsRed) {
+            selectedBackgroundColor = 1;
+        } else if (v.getId() == R.id.dialogBackgroundsCardsGreen) {
+            selectedBackgroundColor = 2;
+        } else if (v.getId() == R.id.dialogBackgroundsCardsYellow) {
+            selectedBackgroundColor = 3;
+        }
+
+        updateDialog();
+    }
+
+    /*
+     * Get the layout from the preference, so I can get the imageView from the widgetLayout
+     */
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        View view = super.onCreateView(parent);
+
+        image = view.findViewById(R.id.preference_cards_background_imageView);
+        updateSummary();
+
+        return view;
+    }
+
+    /**
+     * Update the "selection shadow" and the pictures of the dialog
+     */
+    private void updateDialog() {
+
+        //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+        //params.
+        for (int i = 0; i < NUMBER_OF_CARD_BACKGROUNDS; i++) {
+            linearLayoutsBackgrounds[i].setBackgroundResource(i == selectedBackground ? R.drawable.settings_highlight : typedValue.resourceId);
+        }
+
+        for (int i = 0; i < NUMBER_OF_CARD_BACKGROUNDS; i++) {
+            imageViews[i].setImageBitmap(bitmaps.getCardBack(i, selectedBackgroundColor));
+        }
+
+        for (int i = 0; i < 4; i++) {
+            linearLayoutsColors[i].setBackgroundResource(i == selectedBackgroundColor ? R.drawable.settings_highlight : typedValue.resourceId);
+        }
+    }
+
+    /**
+     * save the selected background and update the summary
+     */
+    private void save() {
+        prefs.saveCardBackground(selectedBackground);
+        prefs.saveCardBackgroundColor(selectedBackgroundColor);
+
+        updateSummary();
+    }
+
+    /**
+     * Gets the bitmap for the card background preference icon and also set its summary
+     */
+    public void updateSummary() {
+        Bitmap cardBack;
+
+        int selectedBackground = prefs.getSavedCardBackground();
+        int selectedBackgroundColor = prefs.getSavedCardBackgroundColor();
+
+        if (image != null) {
+            cardBack = bitmaps.getCardBack(selectedBackground, selectedBackgroundColor);
+            image.setImageBitmap(cardBack);
+        }
+
+        setSummary(String.format(Locale.getDefault(), "%s %s",
+                context.getString(R.string.settings_background), selectedBackground + 1));
+    }
+
+    /*
+     * only save when result is positive
+     */
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+        super.onDialogClosed(positiveResult);
+
+        if (positiveResult) {
+            save();
+        }
+    }
+}
