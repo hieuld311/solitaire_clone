@@ -681,10 +681,6 @@ Brief description of changes
 - [ ] Breaking change
 - [ ] Documentation update
 
-## Testing
-
-Describe testing performed
-
 ## Checklist
 
 - [ ] Code follows project style guidelines
@@ -695,36 +691,6 @@ Describe testing performed
 - [ ] Tests added/updated and passing
 - [ ] Manual testing on physical device
 ```
-
-### Reporting Issues
-
-When reporting bugs:
-
-- Use issue templates if available
-- Include Android version and device model
-- Provide clear reproduction steps
-- Attach screenshots or videos if helpful
-- Check for existing similar issues first
-
-### Code Review Focus Areas
-
-Reviewers will check for:
-
-- Code correctness and logic
-- Memory leak potential
-- Performance implications
-- UI/UX consistency
-- Accessibility considerations
-- Security concerns
-- Test coverage
-- Documentation completeness
-
-### Community
-
-- Be respectful and constructive in discussions
-- Help others when possible
-- Follow the project's code of conduct
-- Ask questions when unclear
 
 ---
 
