@@ -252,7 +252,6 @@ sequenceDiagram
 
 ## Folder Structure
 
-```
 
 solitaire/
 ├── app/                                    # Application module
